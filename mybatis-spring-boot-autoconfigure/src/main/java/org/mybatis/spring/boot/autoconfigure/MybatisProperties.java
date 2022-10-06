@@ -31,6 +31,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 /**
  * Configuration properties for MyBatis.
+ * 配置属性集。
  *
  * @author Eddú Meléndez
  * @author Kazuki Shimizu
@@ -40,20 +41,26 @@ public class MybatisProperties {
 
   public static final String MYBATIS_PREFIX = "mybatis";
 
+  /**
+   * 资源解析器
+   */
   private static final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
 
   /**
    * Location of MyBatis xml config file.
+   * xml配置文件的位置。
    */
   private String configLocation;
 
   /**
    * Locations of MyBatis mapper files.
+   * 映射器文件的位置。
    */
   private String[] mapperLocations;
 
   /**
    * Packages to search type aliases. (Package delimiters are ",; \t\n")
+   * 搜索类型别名的包路径列表。
    */
   private String typeAliasesPackage;
 
@@ -65,6 +72,7 @@ public class MybatisProperties {
 
   /**
    * Packages to search for type handlers. (Package delimiters are ",; \t\n")
+   * 搜索类型处理器的包路径列表。
    */
   private String typeHandlersPackage;
 
@@ -85,12 +93,14 @@ public class MybatisProperties {
 
   /**
    * Externalized properties for MyBatis configuration.
+   * 配置的外部化属性。
    */
   private Properties configurationProperties;
 
   /**
    * A Configuration object for customize default settings. If {@link #configLocation} is specified, this property is
    * not used.
+   * 用于自定义默认设置的配置对象。
    */
   @NestedConfigurationProperty
   private Configuration configuration;
