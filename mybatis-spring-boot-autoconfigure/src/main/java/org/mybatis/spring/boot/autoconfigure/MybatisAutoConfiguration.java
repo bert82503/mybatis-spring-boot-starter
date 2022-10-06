@@ -72,6 +72,7 @@ import org.springframework.util.StringUtils;
 /**
  * {@link EnableAutoConfiguration Auto-Configuration} for Mybatis. Contributes a {@link SqlSessionFactory} and a
  * {@link SqlSessionTemplate}.
+ * 自动配置。
  *
  * If {@link org.mybatis.spring.annotation.MapperScan} is used, or a configuration file is specified as a property,
  * those will be considered, otherwise this auto-configuration will attempt to register mappers based on the interface
@@ -91,14 +92,26 @@ public class MybatisAutoConfiguration implements InitializingBean {
 
   private static final Logger logger = LoggerFactory.getLogger(MybatisAutoConfiguration.class);
 
+  /**
+   * 配置属性集
+   */
   private final MybatisProperties properties;
 
+  /**
+   * 拦截器列表
+   */
   private final Interceptor[] interceptors;
 
+  /**
+   * 类型处理器列表
+   */
   private final TypeHandler[] typeHandlers;
 
   private final LanguageDriver[] languageDrivers;
 
+  /**
+   * 资源加载器
+   */
   private final ResourceLoader resourceLoader;
 
   private final DatabaseIdProvider databaseIdProvider;
@@ -138,6 +151,7 @@ public class MybatisAutoConfiguration implements InitializingBean {
   @Bean
   @ConditionalOnMissingBean
   public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+    // SQL会话工厂bean
     SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
     factory.setDataSource(dataSource);
     factory.setVfs(SpringBootVFS.class);
@@ -170,7 +184,8 @@ public class MybatisAutoConfiguration implements InitializingBean {
       factory.setMapperLocations(this.properties.resolveMapperLocations());
     }
     Set<String> factoryPropertyNames = Stream
-        .of(new BeanWrapperImpl(SqlSessionFactoryBean.class).getPropertyDescriptors()).map(PropertyDescriptor::getName)
+        .of(new BeanWrapperImpl(SqlSessionFactoryBean.class).getPropertyDescriptors())
+        .map(PropertyDescriptor::getName)
         .collect(Collectors.toSet());
     Class<? extends LanguageDriver> defaultLanguageDriver = this.properties.getDefaultScriptingLanguageDriver();
     if (factoryPropertyNames.contains("scriptingLanguageDrivers") && !ObjectUtils.isEmpty(this.languageDrivers)) {
@@ -185,6 +200,7 @@ public class MybatisAutoConfiguration implements InitializingBean {
       factory.setDefaultScriptingLanguageDriver(defaultLanguageDriver);
     }
     applySqlSessionFactoryBeanCustomizers(factory);
+    // 创建SQL会话工厂
     return factory.getObject();
   }
 
@@ -213,6 +229,7 @@ public class MybatisAutoConfiguration implements InitializingBean {
   @ConditionalOnMissingBean
   public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
     ExecutorType executorType = this.properties.getExecutorType();
+    // SQL会话模版
     if (executorType != null) {
       return new SqlSessionTemplate(sqlSessionFactory, executorType);
     } else {
@@ -246,12 +263,16 @@ public class MybatisAutoConfiguration implements InitializingBean {
         packages.forEach(pkg -> logger.debug("Using auto-configuration base package '{}'", pkg));
       }
 
+      // 映射器扫描器配置器
       BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(MapperScannerConfigurer.class);
       builder.addPropertyValue("processPropertyPlaceHolders", true);
+      // @Mapper
       builder.addPropertyValue("annotationClass", Mapper.class);
+      // 基本包路径
       builder.addPropertyValue("basePackage", StringUtils.collectionToCommaDelimitedString(packages));
       BeanWrapper beanWrapper = new BeanWrapperImpl(MapperScannerConfigurer.class);
-      Set<String> propertyNames = Stream.of(beanWrapper.getPropertyDescriptors()).map(PropertyDescriptor::getName)
+      Set<String> propertyNames = Stream.of(beanWrapper.getPropertyDescriptors())
+          .map(PropertyDescriptor::getName)
           .collect(Collectors.toSet());
       if (propertyNames.contains("lazyInitialization")) {
         // Need to mybatis-spring 2.0.2+
@@ -280,6 +301,8 @@ public class MybatisAutoConfiguration implements InitializingBean {
       }
       builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 
+      // 映射器扫描器配置器
+      // 注册bean定义
       registry.registerBeanDefinition(MapperScannerConfigurer.class.getName(), builder.getBeanDefinition());
     }
 
