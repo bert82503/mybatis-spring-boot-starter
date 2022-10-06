@@ -19,6 +19,7 @@ import org.apache.ibatis.session.Configuration;
 
 /**
  * Callback interface that can be customized a {@link Configuration} object generated on auto-configuration.
+ * 自定义配置对象的回调接口。
  *
  * @author Kazuki Shimizu
  * @since 1.2.1

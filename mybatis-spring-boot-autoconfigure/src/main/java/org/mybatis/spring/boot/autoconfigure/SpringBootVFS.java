@@ -28,6 +28,8 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 /**
+ * Provides a very simple API for accessing resources within an application server.
+ *
  * @author Hans Westerbeek
  * @author Eddú Meléndez
  * @author Kazuki Shimizu
@@ -50,7 +52,8 @@ public class SpringBootVFS extends VFS {
     String urlString = url.toString();
     String baseUrlString = urlString.endsWith("/") ? urlString : urlString.concat("/");
     Resource[] resources = resourceResolver.getResources(baseUrlString + "**/*.class");
-    return Stream.of(resources).map(resource -> preserveSubpackageName(baseUrlString, resource, path))
+    return Stream.of(resources)
+        .map(resource -> preserveSubpackageName(baseUrlString, resource, path))
         .collect(Collectors.toList());
   }
 

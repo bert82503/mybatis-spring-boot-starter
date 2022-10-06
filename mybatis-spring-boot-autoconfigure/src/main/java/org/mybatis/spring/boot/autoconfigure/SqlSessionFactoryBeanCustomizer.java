@@ -19,6 +19,7 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 
 /**
  * Callback interface that can be customized a {@link SqlSessionFactoryBean} object generated on auto-configuration.
+ * 自定义SQL会话工厂bean的回调接口。
  *
  * @author Kazuki Shimizu
  * @since 2.2.2
