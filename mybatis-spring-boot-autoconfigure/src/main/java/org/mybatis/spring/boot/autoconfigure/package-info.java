@@ -14,6 +14,7 @@
  *    limitations under the License.
  */
 /**
+ * 自动配置
  * @author Eddú Meléndez
  */
 package org.mybatis.spring.boot.autoconfigure;
